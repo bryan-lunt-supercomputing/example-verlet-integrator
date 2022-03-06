@@ -1,8 +1,5 @@
 
 #include "gassim.h"
-extern sim_working_t potential_LJ(const sim_working_t r, const gas_simulation sim);
-extern sim_working_t force_LJ(const sim_working_t r, const gas_simulation sim);
-
 
 #include <stdlib.h>
 //#include <stdio.h>
