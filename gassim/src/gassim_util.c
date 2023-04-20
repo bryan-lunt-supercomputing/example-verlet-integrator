@@ -19,11 +19,12 @@ lattice_t create_lattice(const double pitch, const lattice_position_t min, const
 	double depth = max.z - min.z;
 
 	our_lattice.N_x = (int)floor(width / pitch);
-	if( our_lattice.N_x <= 0 ) our_lattice.N_x = 1;
 	our_lattice.N_y = (int)floor(height / pitch);
-	if( our_lattice.N_y <= 0 ) our_lattice.N_y = 1;
 	our_lattice.N_z = (int)floor(depth / pitch);
-	if( our_lattice.N_z <= 0 ) our_lattice.N_z = 1;
+	
+	if( our_lattice.N_x <= 0 ){ our_lattice.N_x = 1; }
+	if( our_lattice.N_y <= 0 ){ our_lattice.N_y = 1; }
+	if( our_lattice.N_z <= 0 ){ our_lattice.N_z = 1; }
 
 	our_lattice.N_total = our_lattice.N_x * our_lattice.N_y * our_lattice.N_z;
 

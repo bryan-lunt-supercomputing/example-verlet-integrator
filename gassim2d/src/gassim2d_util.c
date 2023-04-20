@@ -18,9 +18,11 @@ lattice_t create_lattice(const double pitch, const lattice_position_t min, const
 	double height = max.y - min.y;
 
 	our_lattice.N_x = (int)floor(width / pitch);
-	if( our_lattice.N_x <= 0 ) our_lattice.N_x = 1;
 	our_lattice.N_y = (int)floor(height / pitch);
-	if( our_lattice.N_y <= 0 ) our_lattice.N_y = 1;
+	
+	//Ensure there is at least one row and one column
+	if( our_lattice.N_x <= 0 ){ our_lattice.N_x = 1; }
+	if( our_lattice.N_y <= 0 ){ our_lattice.N_y = 1; }
 
 	our_lattice.N_total = our_lattice.N_x * our_lattice.N_y;
 

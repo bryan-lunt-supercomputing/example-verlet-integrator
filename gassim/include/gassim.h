@@ -59,7 +59,7 @@ void apply_relativity(const gas_simulation *sim, phys_particle_t *gas, const int
 void update_states(const gas_simulation *sim, const double timestep, phys_particle_t *gas, const int num_particles, phys_vector_t *forces);
 
 
-void marsalia_alg(double *destination, int even_numtogen);
+void marsaglia_alg(double *destination, int even_numtogen);
 void maxwell_boltzmann(const gas_simulation *sim, const double kT, phys_particle_t *gas, const int num_particles );
 
 

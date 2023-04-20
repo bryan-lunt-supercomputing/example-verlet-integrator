@@ -133,7 +133,7 @@ void update_states(const gas_simulation *sim, const double timestep, phys_partic
 *
 *Code adapted (taken directly) from: https://rosettacode.org/wiki/Statistics/Normal_distribution#C
 */
-void marsalia_alg(double *destination, int even_numtogen){
+void marsaglia_alg(double *destination, int even_numtogen){
 	int i;
 	for (i = 0; i < even_numtogen; i += 2 )
         {
@@ -157,23 +157,36 @@ void marsalia_alg(double *destination, int even_numtogen){
 * Our program will use nanometers / nanosecond = m/s and Kelvins, but a user might want something else.
 */
 void maxwell_boltzmann(const gas_simulation *sim, const double kT, phys_particle_t *gas, const int num_particles ){
-	if( num_particles <= 0) return;
+	if( num_particles <= 0){ return; }
 	//there is at least one particle.
 
-	int i;
+	/* The marsaglia algorithm generates multiple doubles at a time.
+		This loop prevents us from wasting them by keeping a buffer/queue of
+		random doubles. We get doubles out of that and into the velocities.
+	*/
+
+	const double maxwell_boltzmann_stddev = pow(kT*pow(sim->mass,-1.0),0.5);//The standard deviation of velocities under the Maxwell-Boltzmann distribution.
+	
+	//Variables related to batching the output of the Marsaglia algorithm. It
 	const int batch_size = 2;
-	const double stddev = pow(kT*pow(sim->mass,-1.0),0.5);//TODO
 	double tmp_dataspace[VECTOR_DIMENSIONALITY*batch_size];//we generate enough for two vectors at once. (Guaranteeing we generate an even number and don't waste.)
-	int offset = -1;
+	int batch_offset = 0;
+	
+	int i;//loop iterator
 	for(i=0;i<num_particles;i++){
+		
 		if( i%batch_size == 0){
-			offset = -1;
-			marsalia_alg(tmp_dataspace, VECTOR_DIMENSIONALITY*batch_size );
+			//generate a new batch of normal distribution doubles.
+			//We will scale for the stddev later.
+			batch_offset = 0;
+			marsaglia_alg(tmp_dataspace, VECTOR_DIMENSIONALITY*batch_size );
 		}
 
-		phys_vector_t tmp = (phys_vector_t){ .x = tmp_dataspace[++offset],
-									.y = tmp_dataspace[++offset],
-									.z = tmp_dataspace[++offset] };
-		gas[i].v = SCALtVEC(stddev, tmp);
+		phys_vector_t tmp;
+		tmp.x = tmp_dataspace[batch_offset++];
+		tmp.y = tmp_dataspace[batch_offset++];
+		tmp.z = tmp_dataspace[batch_offset++];
+		
+		gas[i].v = SCALtVEC(maxwell_boltzmann_stddev, tmp); //scale for stddev.
 	}
 }
