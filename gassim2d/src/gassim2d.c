@@ -46,7 +46,7 @@ void find_forces_environment(const gas_simulation *sim, phys_particle_t *gas, co
 		}
 
 		if((*sim).enforce_bounds.y){
-			if(one_pos.y < wall_cutoff_bounds.max.y) {
+			if(one_pos.y < wall_cutoff_bounds.min.y) {
 				//force in positive y
 				one_particle_forces.y = pow(wall_position_bb.min.y-one_pos.y,-6.0);
 			}else if(one_pos.y > wall_cutoff_bounds.max.y){
